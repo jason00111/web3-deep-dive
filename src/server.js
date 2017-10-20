@@ -16,54 +16,12 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json())
 
 const functionNames = [
-  // 'currentProvider',
-  // '_requestManager',
-  // 'givenProvider',
-  // 'providers',
-  // '_provider',
-  // 'setProvider',
-  // 'BatchRequest',
-  // 'extend',
-  // 'defaultAccount',
-  // 'defaultBlock',
-  // 'clearSubscriptions',
-  // 'net',
-  // 'accounts',
-  // 'personal',
-  // 'Contract',
-  // 'Iban',
-  // 'abi',
-  // 'getProtocolVersion',
-  // 'getCoinbase',
-  // 'isMining',
-  // 'getHashrate',
-  // 'isSyncing',
-  'getGasPrice',
-  'getAccounts',
-  'getBlockNumber',
-  // 'getBalance',
-  // 'getStorageAt',
-  // 'getCode',
-  // 'getBlock',
-  // 'getUncle',
-  // 'getBlockTransactionCount',
-  // 'getBlockUncleCount',
-  // 'getTransaction',
-  // 'getTransactionFromBlock',
-  // 'getTransactionReceipt',
-  // 'getTransactionCount',
-  // 'sendSignedTransaction',
-  // 'signTransaction',
-  // 'sendTransaction',
-  // 'sign',
-  // 'call',
-  // 'estimateGas',
-  // 'getCompilers',
-  // 'compile',
-  // 'submitWork',
-  // 'getWork',
-  // 'getPastLogs',
-  // 'subscribe'
+  'eth.getGasPrice',
+  'eth.getAccounts',
+  'eth.getBlockNumber',
+  'eth.net.getId',
+  'eth.net.isListening',
+  'eth.net.getPeerCount',
 ]
 
 app.get('/', (request, response) => {
@@ -77,7 +35,10 @@ app.post('/ajax-request', (request, response) => {
   console.log('    functionName:', functionName)
   console.log('    parameters:', parameters)
 
-  web3.eth[functionName].apply(null, parameters)
+  const theFunction = functionName.split('.')
+    .reduce((acc, part) => acc[part], web3)
+
+  theFunction.apply(null, parameters)
     .then(result => {
       console.log('successfully called', functionName)
       console.log('    with result:', result)
