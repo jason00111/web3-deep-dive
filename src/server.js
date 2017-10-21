@@ -22,6 +22,7 @@ const functionNames = [
   'eth.net.getId',
   'eth.net.isListening',
   'eth.net.getPeerCount',
+  // 'eth.accounts.hashMessage'
 ]
 
 app.get('/', (request, response) => {
@@ -38,7 +39,7 @@ app.post('/ajax-request', (request, response) => {
   const theFunction = functionName.split('.')
     .reduce((acc, part) => acc[part], web3)
 
-  theFunction.apply(null, parameters)
+  theFunction.apply(null, JSON.parse(parameters))
     .then(result => {
       console.log('successfully called', functionName)
       console.log('    with result:', result)

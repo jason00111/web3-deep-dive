@@ -15,14 +15,20 @@
         <div class="">
           <button
             class="btn btn-primary"
-            onclick="fetchData('<%= functionNames[i] %>', [])">
+            onclick="handleClick('<%= functionNames[i] %>')">
             web3.<%= functionNames[i] %>
           </button>
+          <input type="text" id="<%= functionNames[i] %>_params" value="[]">
           <span id="<%= functionNames[i] %>"></span>
         </div>
       <% } %>
 
       <script>
+        function handleClick(functionName) {
+          var paramString = document.getElementById(functionName + '_params').value
+          fetchData(functionName, paramString)
+        }
+
         function fetchData(functionName, parameters) {
 
           console.log('fetchData called with arguments:')
