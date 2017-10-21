@@ -22,7 +22,32 @@ const functionNames = [
   'eth.net.getId',
   'eth.net.isListening',
   'eth.net.getPeerCount',
-  // 'eth.accounts.hashMessage'
+  'eth.accounts.hashMessage',
+  'utils.randomHex',
+  'utils.sha3',
+  'utils.keccak256',
+  'utils.isHex',
+  'utils.isHexStrict',
+  'utils.isAddress',
+  'utils.toChecksumAddress',
+  'utils.checkAddressChecksum',
+  'utils.toHex',
+  'utils.hexToNumberString',
+  'utils.hexToNumber',
+  'utils.numberToHex',
+  'utils.hexToUtf8',
+  'utils.hexToAscii',
+  'utils.utf8ToHex',
+  'utils.asciiToHex',
+  'utils.hexToBytes',
+  'utils.bytesToHex',
+  'utils.toWei',
+  'utils.fromWei',
+  'utils.toWei',
+  'utils.unitMap',
+  'utils.padLeft',
+  'utils.padRight',
+  'utils.toTwosComplement',
 ]
 
 app.get('/', (request, response) => {
@@ -39,12 +64,19 @@ app.post('/ajax-request', (request, response) => {
   const theFunction = functionName.split('.')
     .reduce((acc, part) => acc[part], web3)
 
-  theFunction.apply(null, JSON.parse(parameters))
-    .then(result => {
-      console.log('successfully called', functionName)
-      console.log('    with result:', result)
+  if (!(theFunction instanceof Function)) {
+    response.send(JSON.stringify(theFunction))
+  } else {
+    const result = theFunction.apply(null, JSON.parse(parameters))
+
+    if (result.then) {
+      result.then(promiseResult => {
+        response.send(JSON.stringify(promiseResult))
+      })
+    } else {
       response.send(JSON.stringify(result))
-    })
+    }
+  }
 })
 
 app.listen(port, () => {
